@@ -140,7 +140,7 @@ void MitsubishiHeatPump::control(const climate::ClimateCall &call) {
                 updated = true;
             }
             break;
-        case climate::CLIMATE_MODE_HEAT_COOL:
+        case climate::CLIMATE_MODE_AUTO:
             hp->setModeSetting("AUTO");
             hp->setPowerSetting("ON");
             if (has_mode){
@@ -189,7 +189,7 @@ void MitsubishiHeatPump::control(const climate::ClimateCall &call) {
                 hp->setPowerSetting("OFF");
                 updated = true;
                 break;
-            case climate::CLIMATE_FAN_DIFFUSE:
+            case climate::CLIMATE_FAN_QUIET:
                 hp->setFanSpeed("QUIET");
                 updated = true;
                 break;
@@ -290,7 +290,7 @@ void MitsubishiHeatPump::hpSettingsChanged() {
             this->mode = climate::CLIMATE_MODE_FAN_ONLY;
             this->action = climate::CLIMATE_ACTION_FAN;
         } else if (strcmp(currentSettings.mode, "AUTO") == 0) {
-            this->mode = climate::CLIMATE_MODE_HEAT_COOL;
+            this->mode = climate::CLIMATE_MODE_AUTO;
             if (auto_setpoint != currentSettings.temperature) {
                 auto_setpoint = currentSettings.temperature;
                 save(currentSettings.temperature, auto_storage);
@@ -316,7 +316,7 @@ void MitsubishiHeatPump::hpSettingsChanged() {
      * const char* FAN_MAP[6]         = {"AUTO", "QUIET", "1", "2", "3", "4"};
      */
     if (strcmp(currentSettings.fan, "QUIET") == 0) {
-        this->fan_mode = climate::CLIMATE_FAN_DIFFUSE;
+        this->fan_mode = climate::CLIMATE_FAN_QUIET;
     } else if (strcmp(currentSettings.fan, "1") == 0) {
             this->fan_mode = climate::CLIMATE_FAN_LOW;
     } else if (strcmp(currentSettings.fan, "2") == 0) {
@@ -377,7 +377,7 @@ void MitsubishiHeatPump::hpStatusChanged(heatpumpStatus currentStatus) {
                 this->action = climate::CLIMATE_ACTION_IDLE;
             }
             break;
-        case climate::CLIMATE_MODE_HEAT_COOL:
+        case climate::CLIMATE_MODE_AUTO:
             this->action = climate::CLIMATE_ACTION_IDLE;
             if (currentStatus.operating) {
               if (this->current_temperature > this->target_temperature) {

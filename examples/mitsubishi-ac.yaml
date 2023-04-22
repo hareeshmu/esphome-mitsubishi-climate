@@ -1,0 +1,74 @@
+substitutions:
+  name: mitsubishi-ac
+  friendly_name: mitsubishi-ac
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+
+esp8266:
+  board: d1_mini
+
+api:
+  encryption:
+    key: "PFDlEG39lYIR/x/sRaSKfu7YhMUSm4iYbItssyREuSo="
+
+ota:
+  password: "OTA_PASSWORD"
+
+wifi:
+  ssid: wifi_ssid
+  password: wifi_password
+
+  ap:
+    ssid: "${name} Fallback Hotspot"
+    password: "Hatqr92jgBDE"
+
+captive_portal:
+
+logger:
+  baud_rate: 0
+
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+
+text_sensor:
+  - platform: version
+    name: ${name} ESPHome Version
+  - platform: wifi_info
+    ip_address:
+      name: ${name} IP
+    ssid:
+      name: ${name} SSID
+    bssid:
+      name: ${name} BSSID
+
+sensor:
+  - platform: uptime
+    name: ${name} Uptime
+
+  - platform: wifi_signal
+    name: ${name} WiFi Signal
+    update_interval: 60s
+
+switch:
+  - platform: restart
+    name: ${name} Restart
+
+external_components:
+  - source: github://hareeshmu/esphome-mitsubishi-climate
+
+climate:
+  - platform: mitsubishi_climate
+    name: "${friendly_name}"
+    hardware_uart: UART0
+    baud_rate: 9600
+    supports:
+      mode: ["AUTO", "COOL", "DRY", "FAN_ONLY"]
+      fan_mode: ["AUTO", "QUIET", "LOW", "MEDIUM", "MIDDLE", "HIGH"]
+      swing_mode: ["OFF", "VERTICAL"]
+    visual:
+      min_temperature: 16
+      max_temperature: 31
+      temperature_step: 1.0
